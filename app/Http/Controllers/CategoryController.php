@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Util\CategoryTreeBuilder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller;
@@ -32,5 +33,42 @@ class CategoryController extends Controller
         Category::create($input);
 
         return response()->json(['status' => true]);
+    }
+
+    public function retrieve(Request $request): JsonResponse
+    {
+        $input = $request->all();
+
+        if (empty($input['method']))
+        {
+            return response()->json(['status' => false, 'message' => 'Paramater \'method\' is required.']);
+        }
+
+        $temp = Category::all();
+        $categories = [];
+
+        foreach ($temp as $t)
+        {
+            $categories[] = ['id' => (int) $t->id, 'parent_id' => (int) $t->parent_id, 'title' => $t->title];
+        }
+
+        switch ($input['method'])
+        {
+            case 'recursive':
+                $response['status'] = true;
+                $response['categories'] = CategoryTreeBuilder::buildUsingRecursiveMethod($categories);
+                break;
+
+            case 'iterative':
+                $response['status'] = true;
+                $response['categories'] = CategoryTreeBuilder::buildUsingIterativeMethod($categories);
+                break;
+
+            default:
+                $response['status'] = false;
+                $response = ['message' => 'Unknown method.'];
+        }
+
+        return response()->json($response);
     }
 }
