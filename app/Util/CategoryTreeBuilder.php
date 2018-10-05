@@ -29,6 +29,23 @@ class CategoryTreeBuilder
 
     public static function buildUsingRecursiveMethod(array &$categories, int $parentId = 0): array
     {
+        $categoryTree = [];
 
+        foreach ($categories as $category)
+        {
+            if ($category['parent_id'] === $parentId)
+            {
+                $child = self::buildUsingRecursiveMethod($categories, $category['id']);
+
+                if (!empty($child))
+                {
+                    $category['childs'] = $child;
+                }
+
+                $categoryTree[] = $category;
+            }
+        }
+
+        return $categoryTree;
     }
 }
