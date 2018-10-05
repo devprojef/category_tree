@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Category tree</title>
+    <script defer src="js/App.js"></script>
+</head>
+
+<body onload="App.run();">
+    <form>
+        <label for="inTitle">Category title:</label>
+        <input type="text" id="inTitle" style="border:1px solid black;">
+        <label for="inCategoryId">Parent category:</label>
+        <select id="inCategoryId" style="min-width:300px;"></select>
+        <button id="addCategory">Add category</button>
+    </form><br>
+
+    <label for="inMethod">Method:</label>
+    <select id="inMethod">
+        <option value="recursive">Recursive</option>
+        <option value="iterative">Iterative</option>
+    </select>
+    <div>Category Tree:</div>
+    <div id="divCatagories"></div>
+</body>
+
+</html>
