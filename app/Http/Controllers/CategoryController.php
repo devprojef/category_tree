@@ -12,11 +12,25 @@ class CategoryController extends Controller
 {
     public function add(Request $request): JsonResponse
     {
+        $input = $request->all();
 
-    }
+        if (empty($input['title']))
+        {
+            return response()->json(['status' => false, 'message' => 'Paramater \'title\' is required.']);
+        }
 
-    public function retrieve(Request $request): JsonResponse
-    {
+        $input['parent_id'] = empty($input['parent_id']) ? null : $input['parent_id'];
 
+        /** @var \Illuminate\Database\Query\Builder $query */
+        $query = Category::where('id', '=', $input['parent_id']);
+
+        if ($input['parent_id'] !== null && $query->first() === null)
+        {
+            return response()->json(['status' => false, 'message' => 'Parent category not exist.']);
+        }
+
+        Category::create($input);
+
+        return response()->json(['status' => true]);
     }
 }
